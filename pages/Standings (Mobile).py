@@ -5,6 +5,9 @@ import streamlit as st
 import plotly.express as px
 
 
+st.set_page_config(page_title="Standings",
+                   layout="centered")
+
 df = LeagueStandings().get_data_frames()[0]
 dff = df.sort_values('TeamCity')
 
