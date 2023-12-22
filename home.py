@@ -281,8 +281,8 @@ try:
                 fig.update_traces(texttemplate='%{text}', textposition='inside',
                                     hovertemplate='%{x}'+'<br>%{text}'+f' {player_stat}')
             fig.update_layout(coloraxis_showscale=False,
-                            xaxis=dict(title_text='', tickfont=dict(size=14)),
-                            yaxis=dict(title_text='', tickfont=dict(size=14)),
+                            xaxis=dict(title_text='', tickfont=dict(size=16)),
+                            yaxis=dict(title_text='', tickfont=dict(size=16)),
                             font=dict(size=14),
                             hoverlabel=dict(font_size=14),
                             height=600)
@@ -329,8 +329,8 @@ try:
                                     hovertemplate='%{x}'+'<br>%{text}'+f' {team_stat}')
 
             fig.update_layout(coloraxis_showscale=False,
-                            xaxis=dict(title_text='', tickfont=dict(size=14)),
-                            yaxis=dict(title_text='', tickfont=dict(size=14)),
+                            xaxis=dict(title_text='', tickfont=dict(size=16)),
+                            yaxis=dict(title_text='', tickfont=dict(size=16)),
                             font=dict(size=14),
                             hoverlabel=dict(font_size=14),
                             height=600)
