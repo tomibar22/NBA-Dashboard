@@ -11,6 +11,7 @@ show_pages(
     [
         Page('home.py', "Yesterday's Games"),
         Page('pages/Standings (Desktop).py'),
+        Page('pages/Standings (Mobile).py'),
         Page('pages/News.py'),
         Page('pages/Player Stats.py'),
         Page('pages/Team Stats.py'),
