@@ -10,7 +10,7 @@ from st_pages import Page, show_pages, add_page_title
 show_pages(
     [
         Page('home.py', "Yesterday's Games"),
-        Page('pages/Standings.py'),
+        Page('pages/Standings (Desktop).py'),
         Page('pages/News.py'),
         Page('pages/Player Stats.py'),
         Page('pages/Team Stats.py'),
