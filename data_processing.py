@@ -81,7 +81,7 @@ def get_rookie_stats_per_game(season_type):
     rookie_df = rookie_df[['PLAYER_NAME', 'TEAM_ABBREVIATION', 'PTS', 'AST', 'REB', 'OREB', 'DREB', 'FG_PCT', 'FGM', 'FGA', 'FG3_PCT', 'FG3M', 'FG3A', 'BLK', 'STL', 'TOV', 'PF', 'PLUS_MINUS', 'FT_PCT', 'FTM', 'FTA', 'MIN',  'AGE']]
     rookie_df = rookie_df.rename(columns={'TEAM_ABBREVIATION': 'TEAM',
                                         'PLAYER_NAME': 'PLAYER'})
-    condition = rookie_df['FGA'] >= 10
+    condition = rookie_df['FGA'] >= 5
     rookie_df.loc[condition, 'EFG_PCT'] = (rookie_df.loc[condition, 'FGM'] + (0.5 * rookie_df.loc[condition, 'FG3M'])) / rookie_df.loc[condition, 'FGA']
     rookie_df = rookie_df.dropna(subset='EFG_PCT')
     return rookie_df
