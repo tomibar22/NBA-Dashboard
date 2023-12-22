@@ -39,50 +39,54 @@ west['Status'] = west.index.to_series().apply(lambda x: 'Playoff Qualifiers' if 
 west['WinPCT_str'] = west['WinPCT'].map('{:.1%}'.format)
 west['Position'] = range(1, len(east) + 1)
 
+c1,c2,c3=st.columns([1,8,1])
+with c2:
+    with st.container(border=True):
+        c1,c2,c3=st.columns([1,8,1])
+        with c2:
+            st.markdown(f"<h2 style='text-align: center; letter-spacing: 4px; word-spacing: 20px; font-size: 40px;'>EAST</h2>", unsafe_allow_html=True)
+            fig = px.bar(east, x='WinPCT', y='Team',
+                        orientation='h', 
+                        text=east.apply(lambda row: f"  {row['Record']}   <b>|</b>   {row['WinPCT_str']}   <b>|</b>   {row['strCurrentStreak']}   ", axis=1),
+                        hover_data=['L10', 'DiffPointsPG'],
+                        color='Status',
+                        color_discrete_sequence=['#145A32', '#154360', '#4D5656'],
+                        height=1050)
+            
+            fig.update_yaxes(categoryorder='array', categoryarray=east['Team'][::-1])
+            fig.update_traces(hovertemplate='L10: %{customdata[0]}   DPPG: %{customdata[1]}',
+                            insidetextfont=dict(size=20),
+                            outsidetextfont=dict(size=20))
+            fig.update_layout(font=dict(size=18),
+                            xaxis=dict(title_text='', showticklabels=False),
+                            yaxis=dict(title_text='', tickmode='array', tickvals=east['Team'], ticktext=east.apply(lambda row: f"<b><span style='font-size: 30px;'>{row['Team']}</span></b> <span style='font-size: 16px;'>#{row['Position']}</span>", axis=1), tickfont=dict(size=22)),
+                            hoverlabel=dict(font_size=20),
+                            showlegend=False,
+                            hoverlabel_align = 'left')
+            
+            line_positions = [4.5, 8.5]
+            shapes = [
+                dict(
+                    type='line',
+                    x0=0,
+                    x1=1,
+                    y0=position,
+                    y1=position,
+                    line=dict(color='#CACFD2', width=2, dash='dash')
+                )
+                for position in line_positions
+            ]
 
-with st.container(border=True):
-    c1, c2, c3, c4, c5 = st.columns([0.7,12,1,12,0.7])
-    with c4:
-        st.markdown(f"<h2 style='text-align: center; letter-spacing: 4px; word-spacing: 20px; font-size: 40px;'>EAST</h2>", unsafe_allow_html=True)
-        fig = px.bar(east, x='WinPCT', y='Team',
-                    orientation='h', 
-                    text=east.apply(lambda row: f"  {row['Record']}   <b>|</b>   {row['WinPCT_str']}   <b>|</b>   {row['strCurrentStreak']}   ", axis=1),
-                    hover_data=['L10', 'DiffPointsPG'],
-                    color='Status',
-                    color_discrete_sequence=['#145A32', '#154360', '#4D5656'],
-                    height=1050)
-        
-        fig.update_yaxes(categoryorder='array', categoryarray=east['Team'][::-1])
-        fig.update_traces(hovertemplate='L10: %{customdata[0]}   DPPG: %{customdata[1]}',
-                        insidetextfont=dict(size=20),
-                        outsidetextfont=dict(size=20))
-        fig.update_layout(font=dict(size=18),
-                        xaxis=dict(title_text='', showticklabels=False),
-                        yaxis=dict(title_text='', tickmode='array', tickvals=east['Team'], ticktext=east.apply(lambda row: f"<b><span style='font-size: 30px;'>{row['Team']}</span></b> <span style='font-size: 16px;'>#{row['Position']}</span>", axis=1), tickfont=dict(size=22)),
-                        hoverlabel=dict(font_size=20),
-                        showlegend=False,
-                        hoverlabel_align = 'left')
-        
-        line_positions = [4.5, 8.5]
-        shapes = [
-            dict(
-                type='line',
-                x0=0,
-                x1=1,
-                y0=position,
-                y1=position,
-                line=dict(color='#CACFD2', width=2, dash='dash')
-            )
-            for position in line_positions
-        ]
-
-        fig.update_layout(shapes=shapes)
-
-
-        st.plotly_chart(fig, use_container_width=True)
+            fig.update_layout(shapes=shapes)
 
 
-    with c2:
+            st.plotly_chart(fig, use_container_width=True)
+
+c1,c2,c3=st.columns([1,8,1])
+with c2:
+    with st.container(border=True):
+        c1,c2,c3=st.columns([1,8,1])
+        with c2:
             st.markdown(f"<h2 style='text-align: center; letter-spacing: 4px; word-spacing: 20px; font-size: 40px;'>WEST</h2>", unsafe_allow_html=True)
             fig = px.bar(west, x='WinPCT', y='Team',
                     orientation='h', 
@@ -91,7 +95,7 @@ with st.container(border=True):
                     color='Status',
                     color_discrete_sequence=['#145A32', '#154360', '#4D5656'],
                     height=1050)
-        
+
             fig.update_yaxes(categoryorder='total ascending')
             fig.update_traces(hovertemplate='L10: %{customdata[0]}   DPPG: %{customdata[1]}',
                             insidetextfont=dict(size=20),
