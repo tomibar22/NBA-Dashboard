@@ -146,7 +146,7 @@ def get_yesterday_stats():
 
 
 
-@retry    
+
 @st.cache_resource
 def get_team_stats():
     game_ids, team_ids, team_names = get_yesterday_games_ids()
