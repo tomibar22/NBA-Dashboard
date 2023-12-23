@@ -112,10 +112,10 @@ try:
     player_games = get_player_games(player_id, season, season_type, stat)
     
     pct = {
-        'FG_PCT': [stat, 'FGM', 'FGA'],
-        'FG3_PCT': [stat, 'FG3M', 'FG3A'],
-        'FT_PCT': [stat, 'FTM', 'FTA'],
-        'EFG_PCT': [stat, 'FGM', 'FGA']
+        'FG_PCT': [stat, 'FGM', 'FGA', 'WL'],
+        'FG3_PCT': [stat, 'FG3M', 'FG3A', 'WL'],
+        'FT_PCT': [stat, 'FTM', 'FTA', 'WL'],
+        'EFG_PCT': [stat, 'FGM', 'FGA', 'WL']
             }
 
     fig = px.line(player_games, x=player_games.index, y=stat, markers=True, 
@@ -142,7 +142,7 @@ try:
                     line_shape='spline')
 
     if 'PCT' in stat:
-        fig.update_traces(texttemplate='%{y}%'+'<br>%{customdata[0]}/%{customdata[1]}', hovertemplate='<br>%{text}' + '<br>%{x}' +  '<br>%{y}% '+'<br>%{customdata[0]}/%{customdata[1]}', 
+        fig.update_traces(texttemplate='%{y}%'+'<br>%{customdata[0]}/%{customdata[1]}', hovertemplate='<br>%{text}' + '<br>%{x}' +  '<br>%{y}% '+'<br>%{customdata[0]}/%{customdata[1]}' + '<br>%{customdata[2]}', 
                           text=player_games.index)
     else:
         fig.update_traces(texttemplate='%{y}', hovertemplate='<br>%{text}' + '<br>%{x}' +  '<br>%{y} ' + f'{stat}', text=player_games.index)
