@@ -36,7 +36,8 @@ def retry(func, retries=3):
                 attempts += 1
 
     return retry_wrapper
-   
+
+@retry
 @st.cache_data  
 def get_yesterday_games_ids():
     games_df = leaguegamelog.LeagueGameLog().get_data_frames()[0]
