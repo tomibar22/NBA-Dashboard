@@ -129,7 +129,7 @@ def get_yesterday_stats():
 
 
 
-
+@st.cache_data(ttl=timedelta(hours=10))
 def get_team_stats():
     game_ids, team_ids, team_names = get_yesterday_games_ids()
 
