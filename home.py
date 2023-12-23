@@ -37,9 +37,8 @@ def retry(func, retries=3):
 
     return retry_wrapper
    
-    
+@retry    
 @st.cache_resource
-@retry
 def get_yesterday_games_ids():
     games_df = leaguegamelog.LeagueGameLog().get_data_frames()[0]
     games_df['GAME_DATE'] = pd.to_datetime(games_df['GAME_DATE'])
@@ -54,9 +53,8 @@ def get_yesterday_games_ids():
 
 
 
-
+@retry    
 @st.cache_resource
-@retry
 def get_yesterday_clutch_games():
     processed_game_ids = set()
     clutch_games_summary = {}
@@ -118,8 +116,8 @@ def get_yesterday_clutch_games():
 
 
 
+@retry    
 @st.cache_resource
-@retry
 def get_yesterday_stats():
     yesterday_games = get_yesterday_games_ids()[0]
     yesterday_stats = []
@@ -148,8 +146,8 @@ def get_yesterday_stats():
 
 
 
+@retry    
 @st.cache_resource
-@retry
 def get_team_stats():
     game_ids, team_ids, team_names = get_yesterday_games_ids()
 
