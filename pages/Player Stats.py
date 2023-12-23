@@ -61,8 +61,8 @@ try:
     c1,c2,c3,c4 = st.columns([4,3,3,4])
     with c2:
         player_info = commonplayerinfo.CommonPlayerInfo(player_id=player_id).get_data_frames()[0]
-        start_year = player_info['FROM_YEAR'].astype(int)
-        end_year = player_info['TO_YEAR'].astype(int)
+        start_year = int(player_info['FROM_YEAR'].iloc[0])
+        end_year = int(player_info['TO_YEAR'].iloc[0])
         nba_seasons = [f"{year}-{(year + 1) % 100:02d}" for year in range(start_year, end_year + 1)]
         season = st.selectbox('Season', nba_seasons[::-1], index=0, label_visibility='hidden')
 
