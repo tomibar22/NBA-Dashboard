@@ -105,7 +105,7 @@ def get_yesterday_clutch_games():
 
 
 
-@st.cache_data
+# @st.cache_data
 def get_yesterday_stats():
     yesterday_games = get_yesterday_games_ids()[0]
     yesterday_stats = []
@@ -134,7 +134,7 @@ def get_yesterday_stats():
 
 
 
-@st.cache_data
+# @st.cache_data
 def get_team_stats():
     game_ids, team_ids, team_names = get_yesterday_games_ids()
 
