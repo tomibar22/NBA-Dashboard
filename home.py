@@ -43,7 +43,7 @@ def get_yesterday_games_ids():
 
 
 
-@st.cache_data
+# @st.cache_data
 def get_yesterday_clutch_games():
     processed_game_ids = set()
     clutch_games_summary = {}
