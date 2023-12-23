@@ -278,8 +278,8 @@ try:
             fig.update_layout(coloraxis_showscale=False,
                             xaxis=dict(title_text='', tickfont=dict(size=17)),
                             yaxis=dict(title_text='', tickfont=dict(size=17)),
-                            font=dict(size=117),
-                            hoverlabel=dict(font_size=117),
+                            font=dict(size=17),
+                            hoverlabel=dict(font_size=17),
                             height=600)
             st.plotly_chart(fig, use_container_width=True)
             players_df = players_df.set_index(players_df.columns[0])
