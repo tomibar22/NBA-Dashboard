@@ -276,10 +276,10 @@ try:
                 fig.update_traces(texttemplate='%{text}', textposition='inside',
                                     hovertemplate='%{x}'+'<br>%{text}'+f' {player_stat}')
             fig.update_layout(coloraxis_showscale=False,
-                            xaxis=dict(title_text='', tickfont=dict(size=17)),
-                            yaxis=dict(title_text='', tickfont=dict(size=17)),
-                            font=dict(size=17),
-                            hoverlabel=dict(font_size=17),
+                            xaxis=dict(title_text='', tickfont=dict(size=20)),
+                            yaxis=dict(title_text='', tickfont=dict(size=20)),
+                            font=dict(size=20),
+                            hoverlabel=dict(font_size=20),
                             height=600)
             st.plotly_chart(fig, use_container_width=True)
             players_df = players_df.set_index(players_df.columns[0])
@@ -324,10 +324,10 @@ try:
                                     hovertemplate='%{x}'+'<br>%{text}'+f' {team_stat}')
 
             fig.update_layout(coloraxis_showscale=False,
-                            xaxis=dict(title_text='', tickfont=dict(size=17)),
-                            yaxis=dict(title_text='', tickfont=dict(size=17)),
-                            font=dict(size=17),
-                            hoverlabel=dict(font_size=17),
+                            xaxis=dict(title_text='', tickfont=dict(size=20)),
+                            yaxis=dict(title_text='', tickfont=dict(size=20)),
+                            font=dict(size=20),
+                            hoverlabel=dict(font_size=20),
                             height=600)
 
             st.plotly_chart(fig, use_container_width=True)
