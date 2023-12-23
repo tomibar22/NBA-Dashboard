@@ -119,7 +119,7 @@ try:
             }
 
     fig = px.line(player_games, x=player_games.index, y=stat, markers=True, 
-                  hover_data=pct[stat] if 'PCT' in stat else None,
+                  hover_data=pct[stat] if 'PCT' in stat else ['WL'],
                   text=stat)
     if 'PCT' in stat:
         y_max = player_games[f'{stat}_CLEAN'].max() *100 +10
@@ -145,7 +145,7 @@ try:
         fig.update_traces(texttemplate='%{y}%'+'<br>%{customdata[0]}/%{customdata[1]}', hovertemplate='<br>%{text}' + '<br>%{x}' +  '<br>%{y}% '+'<br>%{customdata[0]}/%{customdata[1]}' + '<br>%{customdata[2]}', 
                           text=player_games.index)
     else:
-        fig.update_traces(texttemplate='%{y}', hovertemplate='<br>%{text}' + '<br>%{x}' +  '<br>%{y} ' + f'{stat}', text=player_games.index)
+        fig.update_traces(texttemplate='%{y}', hovertemplate='<br>%{text}' + '<br>%{x}' +  '<br>%{y} ' + f'{stat}' + '<br>%{customdata[0]}', text=player_games.index)
 
     for x_value, y_value in zip(player_games.index, player_games[stat]):
         fig.add_trace(go.Scatter(x=[x_value, x_value], y=[0, y_value],
@@ -156,7 +156,7 @@ try:
 
     cl1, cl2, cl3 = st.columns([1,5,1])
     with cl2:
-        player_games = player_games.drop(columns=['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN'])
+        player_games = player_games.drop(columns=['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'EFG_PCT_CLEAN'])
         st.markdown('')
         with st.expander('Show Full Data'):
             st.dataframe(player_games, use_container_width=True)
