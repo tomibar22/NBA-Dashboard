@@ -108,6 +108,7 @@ def get_player_games(player_id, season, season_type, stat):
     player_games[columns_to_convert] = player_games[columns_to_convert].astype(int)
     condition = player_games['FGA'] >= 10
     player_games.loc[condition, 'EFG_PCT'] = (player_games.loc[condition, 'FGM'] + (0.5 * player_games.loc[condition, 'FG3M'])) / player_games.loc[condition, 'FGA']
+    player_games = player_games.dropna(subset='EFG_PCT')
     player_games[['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'EFG_PCT_CLEAN']] = player_games[['FG_PCT', 'FG3_PCT', 'FT_PCT', 'EFG_PCT']]
     player_games[['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'EFG_PCT_CLEAN']] = player_games[['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'EFG_PCT']].apply(pd.to_numeric, errors='coerce')
     percentage_columns = ['FG_PCT', 'FG3_PCT', 'FT_PCT',  'EFG_PCT']
