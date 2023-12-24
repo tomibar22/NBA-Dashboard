@@ -4,7 +4,7 @@ import streamlit_antd_components as sac
 import pandas as pd
 from nba_api.stats.static import players, teams
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil import parser
 import time
 import re
@@ -61,7 +61,7 @@ if player:
     player = player.split(' ')[1]
 
 
-
+@st.cache_data(ttl=timedelta(hours=1))
 def get_news(source):
 
     url = "https://nba-latest-news.p.rapidapi.com/articles"
