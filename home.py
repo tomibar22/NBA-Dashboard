@@ -297,10 +297,10 @@ try:
             team_stat = st.selectbox('Sort By:', ['PTS', 'EFG_PCT', 'AST', 'REB', 'OREB', 'DREB', 'FG_PCT', 'FG3_PCT', 'BLK', 'STL', 'TOV', 'PF', 'FT_PCT'], label_visibility='hidden')
             team_df = team_stats_leaders(team_stat)
             pct = {
-                'FG_PCT': [team_stat, 'FGM', 'FGA'],
-                'FG3_PCT': [team_stat, 'FG3M', 'FG3A'],
-                'FT_PCT': [team_stat, 'FTM', 'FTA'],
-                'EFG_PCT': [team_stat, 'FGM', 'FGA']
+                'FG_PCT': [team_stat, 'FGM', 'FGA', 'WL'],
+                'FG3_PCT': [team_stat, 'FG3M', 'FG3A', 'WL'],
+                'FT_PCT': [team_stat, 'FTM', 'FTA', 'WL'],
+                'EFG_PCT': [team_stat, 'FGM', 'FGA', 'WL']
             }
             if '100%' in team_df[team_stat].unique():
                 team_df = team_df.loc[team_df[team_stat] != '100%']
@@ -311,17 +311,17 @@ try:
 
             fig = px.bar(team_df.head(10), x='TEAM', y=team_stat,
                         text=team_stat,
-                        hover_data=pct[team_stat] if 'PCT' in team_stat else None,
+                        hover_data=pct[team_stat] if 'PCT' in team_stat else ['WL'],
                         color=team_stat,
                         color_continuous_midpoint=team_df[team_stat].mean(),
                         color_continuous_scale='Greens')
 
             if 'PCT' in team_stat:
                 fig.update_traces(texttemplate='%{text:.0%}'+'<br>%{customdata[0]}/%{customdata[1]}', textposition='inside',
-                                    hovertemplate='%{x}'+'<br>%{text:.0%}'+'<br>%{customdata[0]} / %{customdata[1]}')
+                                    hovertemplate='%{x}'+'<br>%{text:.0%}'+'<br>%{customdata[0]} / %{customdata[1]}' + '<br>%{customdata[2]}')
             else:
                 fig.update_traces(texttemplate='%{text}', textposition='inside',
-                                    hovertemplate='%{x}'+'<br>%{text}'+f' {team_stat}')
+                                    hovertemplate='%{x}'+'<br>%{text}'+f' {team_stat}' + '<br>%{customdata[0]}')
 
             fig.update_layout(coloraxis_showscale=False,
                             xaxis=dict(title_text='', tickfont=dict(size=20)),
