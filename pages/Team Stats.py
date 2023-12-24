@@ -174,10 +174,10 @@ if team:
         team_games = get_team_games(stat)
         
         pct = {
-            'FG_PCT': [stat, 'FGM', 'FGA'],
-            'FG3_PCT': [stat, 'FG3M', 'FG3A'],
-            'FT_PCT': [stat, 'FTM', 'FTA'],
-            'EFG_PCT': [stat, 'FGM', 'FGA']
+            'FG_PCT': [stat, 'FGM', 'FGA', 'WL'],
+            'FG3_PCT': [stat, 'FG3M', 'FG3A', 'WL'],
+            'FT_PCT': [stat, 'FTM', 'FTA', 'WL'],
+            'EFG_PCT': [stat, 'FGM', 'FGA', 'WL']
                 }
 
         fig = px.line(team_games, x=team_games.index, y=stat, markers=True, 
@@ -204,13 +204,13 @@ if team:
                         # fill='tozeroy',
                         line_shape='spline')
         if 'PCT' in stat:
-            fig.update_traces(texttemplate='%{y}%'+'<br>%{customdata[0]}/%{customdata[1]}', hovertemplate='<br>%{text}' + '<br>%{x}' +  '<br>%{y}% '+'<br>%{customdata[0]}/%{customdata[1]}', 
+            fig.update_traces(texttemplate='%{y}%'+'<br>%{customdata[0]}/%{customdata[1]}', hovertemplate='<br>%{text}' + '<br>%{x}' +  '<br>%{y}% '+'<br>%{customdata[0]}/%{customdata[1]}' + '<br>%{customdata[2]}', 
                             text=team_games.index)
         elif stat == 'WL':
             fig.update_traces(texttemplate='%{y}', hovertemplate='<br>%{text}' + '<br>%{x}' +  '<br>%{y} ', text=team_games.index)
 
         else:
-            fig.update_traces(texttemplate='%{y}', hovertemplate='<br>%{text}' + '<br>%{x}' +  '<br>%{y} ' + f'{stat}', text=team_games.index)
+            fig.update_traces(texttemplate='%{y}', hovertemplate='<br>%{text}' + '<br>%{x}' +  '<br>%{y} ' + f'{stat}' + '<br>%{customdata[0]}', text=team_games.index)
 
         for x_value, y_value in zip(team_games.index, team_games[stat]):
             fig.add_trace(go.Scatter(x=[x_value, x_value], y=[0, y_value],
