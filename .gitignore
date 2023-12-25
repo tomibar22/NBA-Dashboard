@@ -1,4 +1,4 @@
-.gitignore
+# .gitignore
 
-Include venv/ if it was previously ignored
-venv/
+# Include venv/ if it was previously ignored
+# venv/
