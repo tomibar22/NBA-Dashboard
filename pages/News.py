@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from dateutil import parser
 import time
 import re
-from ntscraper import Nitter
+from data_processing import get_tweets
 
 st.set_page_config(page_title="Player Stats Browser",
                    layout="wide")
@@ -195,54 +195,6 @@ with c2:
 
 
 with c3:
-    @st.cache_data(ttl=timedelta(minutes=22))
-    def get_tweets():
-        scraper = Nitter()
-
-        woj_tweets = scraper.get_tweets('wojespn', mode='user', number=5)
-        charania_tweets = scraper.get_tweets('ShamsCharania', mode='user', number=5)
-        stein_tweets = scraper.get_tweets('TheSteinLine', mode='user', number=5)
-        windhorst_tweets = scraper.get_tweets('WindhorstESPN', mode='user', number=5)
-        haynes_tweets = scraper.get_tweets('ChrisBHaynes', mode='user', number=5)
-        tweets = woj_tweets['tweets'] + charania_tweets['tweets'] + stein_tweets['tweets'] + windhorst_tweets['tweets'] + haynes_tweets['tweets']
-
-        
-        tweet_data = []
-
-        text_check = set()
-
-        for tweet in tweets:
-            if tweet['text'] in text_check:
-                continue
-            else:
-                if isinstance(tweet, list): 
-                    tweet = tweet[0] 
-                elif isinstance(tweet, dict):
-                    tweet = tweet
-                else:
-                    continue 
-
-                user_name = tweet['user']['name']
-                tweet_info = {
-                    'User Name': user_name,
-                    'Text': tweet['text'],
-                    'Date': tweet['date'],
-                    'Likes': tweet['stats']['likes'],
-                    'Link': tweet['link']
-                }
-
-                if 'pictures' in tweet:
-                    tweet_info['Pictures'] = ', '.join(tweet['pictures'])
-
-                tweet_data.append(tweet_info)
-                text_check.add(tweet['text'])
-
-
-        df = pd.DataFrame(tweet_data)
-        df['Date'] = pd.to_datetime(df['Date'], format="%b %d, %Y · %I:%M %p UTC")
-        tweets_df = df.sort_values(by='Date', ascending=False).reset_index(drop=True)
-
-        return tweets_df
     
 
     tweets_df = get_tweets()
