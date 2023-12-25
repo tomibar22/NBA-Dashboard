@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 from dateutil import parser
 import time
 import re
-import tqdm
 from ntscraper import Nitter
 
 st.set_page_config(page_title="Player Stats Browser",
