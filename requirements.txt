@@ -83,6 +83,7 @@ nitter==0.0.5
 nitter-scraper==0.5.0
 notebook==6.5.4
 notebook_shim==0.2.3
+ntscraper==0.3.8
 numpy==1.26.2
 oauthlib==3.2.2
 overrides==7.3.1

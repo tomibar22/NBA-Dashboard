@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from dateutil import parser
 import time
 import re
-import nitter
+from ntscraper import Nitter
 
 st.set_page_config(page_title="Player Stats Browser",
                    layout="wide")
@@ -197,7 +197,7 @@ with c2:
 with c3:
     @st.cache_data(ttl=timedelta(minutes=22))
     def get_tweets():
-        scraper = nitter()
+        scraper = Nitter()
 
         woj_tweets = scraper.get_tweets('wojespn', mode='user', number=5)
         charania_tweets = scraper.get_tweets('ShamsCharania', mode='user', number=5)
