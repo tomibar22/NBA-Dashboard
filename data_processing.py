@@ -2,7 +2,6 @@ import pandas as pd
 from datetime import date, timedelta
 from nba_api.stats.endpoints import leaguegamelog, boxscoretraditionalv2, playbyplayv2, teamgamelog, leaguedashplayerstats, playergamelog, leaguedashteamstats
 import streamlit as st
-from ntscraper import Nitter
 
 def sorted_df(df, stat, slider):
     current_columns = df.columns.tolist()
@@ -141,51 +140,51 @@ def get_player_games(player_id, season, season_type, stat):
     
     return player_games
 
-@st.cache_data(ttl=timedelta(minutes=22))
-def get_tweets():
-    scraper = Nitter()
+# @st.cache_data(ttl=timedelta(minutes=22))
+# def get_tweets():
+#     scraper = Nitter()
 
-    woj_tweets = scraper.get_tweets('wojespn', mode='user', number=5)
-    charania_tweets = scraper.get_tweets('ShamsCharania', mode='user', number=5)
-    stein_tweets = scraper.get_tweets('TheSteinLine', mode='user', number=5)
-    windhorst_tweets = scraper.get_tweets('WindhorstESPN', mode='user', number=5)
-    haynes_tweets = scraper.get_tweets('ChrisBHaynes', mode='user', number=5)
-    tweets = woj_tweets['tweets'] + charania_tweets['tweets'] + stein_tweets['tweets'] + windhorst_tweets['tweets'] + haynes_tweets['tweets']
+#     woj_tweets = scraper.get_tweets('wojespn', mode='user', number=5)
+#     charania_tweets = scraper.get_tweets('ShamsCharania', mode='user', number=5)
+#     stein_tweets = scraper.get_tweets('TheSteinLine', mode='user', number=5)
+#     windhorst_tweets = scraper.get_tweets('WindhorstESPN', mode='user', number=5)
+#     haynes_tweets = scraper.get_tweets('ChrisBHaynes', mode='user', number=5)
+#     tweets = woj_tweets['tweets'] + charania_tweets['tweets'] + stein_tweets['tweets'] + windhorst_tweets['tweets'] + haynes_tweets['tweets']
 
     
-    tweet_data = []
+#     tweet_data = []
 
-    text_check = set()
+#     text_check = set()
 
-    for tweet in tweets:
-        if tweet['text'] in text_check:
-            continue
-        else:
-            if isinstance(tweet, list): 
-                tweet = tweet[0] 
-            elif isinstance(tweet, dict):
-                tweet = tweet
-            else:
-                continue 
+#     for tweet in tweets:
+#         if tweet['text'] in text_check:
+#             continue
+#         else:
+#             if isinstance(tweet, list): 
+#                 tweet = tweet[0] 
+#             elif isinstance(tweet, dict):
+#                 tweet = tweet
+#             else:
+#                 continue 
 
-            user_name = tweet['user']['name']
-            tweet_info = {
-                'User Name': user_name,
-                'Text': tweet['text'],
-                'Date': tweet['date'],
-                'Likes': tweet['stats']['likes'],
-                'Link': tweet['link']
-            }
+#             user_name = tweet['user']['name']
+#             tweet_info = {
+#                 'User Name': user_name,
+#                 'Text': tweet['text'],
+#                 'Date': tweet['date'],
+#                 'Likes': tweet['stats']['likes'],
+#                 'Link': tweet['link']
+#             }
 
-            if 'pictures' in tweet:
-                tweet_info['Pictures'] = ', '.join(tweet['pictures'])
+#             if 'pictures' in tweet:
+#                 tweet_info['Pictures'] = ', '.join(tweet['pictures'])
 
-            tweet_data.append(tweet_info)
-            text_check.add(tweet['text'])
+#             tweet_data.append(tweet_info)
+#             text_check.add(tweet['text'])
 
 
-    df = pd.DataFrame(tweet_data)
-    df['Date'] = pd.to_datetime(df['Date'], format="%b %d, %Y · %I:%M %p UTC")
-    tweets_df = df.sort_values(by='Date', ascending=False).reset_index(drop=True)
+#     df = pd.DataFrame(tweet_data)
+#     df['Date'] = pd.to_datetime(df['Date'], format="%b %d, %Y · %I:%M %p UTC")
+#     tweets_df = df.sort_values(by='Date', ascending=False).reset_index(drop=True)
 
-    return tweets_df
+#     return tweets_df
