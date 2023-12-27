@@ -25,7 +25,7 @@ st.set_page_config(page_title="Yesterday's Games",
 
 
 
-@st.cache_data(ttl=timedelta(hours=10))
+@st.cache_data(ttl=timedelta(hours=1))
 def get_yesterday_games_ids():
     games_df = leaguegamelog.LeagueGameLog().get_data_frames()[0]
     games_df['GAME_DATE'] = pd.to_datetime(games_df['GAME_DATE'])
@@ -40,7 +40,7 @@ def get_yesterday_games_ids():
 
 
 
-@st.cache_data(ttl=timedelta(hours=10))
+@st.cache_data(ttl=timedelta(hours=1))
 def get_yesterday_clutch_games():
     processed_game_ids = set()
     clutch_games_summary = {}
@@ -102,7 +102,7 @@ def get_yesterday_clutch_games():
 
 
 
-@st.cache_data(ttl=timedelta(hours=10))
+@st.cache_data(ttl=timedelta(hours=1))
 def get_yesterday_stats():
     yesterday_games = get_yesterday_games_ids()[0]
     yesterday_stats = []
@@ -129,7 +129,7 @@ def get_yesterday_stats():
 
 
 
-@st.cache_data(ttl=timedelta(hours=10))
+@st.cache_data(ttl=timedelta(hours=1))
 def get_team_stats():
     game_ids, team_ids, team_names = get_yesterday_games_ids()
 
