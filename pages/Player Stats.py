@@ -96,7 +96,7 @@ try:
             cl9.markdown(f"<p style='text-align: center;'>TOV<br><b {font_size}>{(player_games['TOV'].mean()).round(1)}</b></p>", unsafe_allow_html=True)
             cl10.markdown(f"<p style='text-align: center;'>PF<br><b {font_size}>{(player_games['PF'].mean()).round(1)}</b></p>", unsafe_allow_html=True)
             cl11.markdown(f"<p style='text-align: center;'>PLUS_MINUS<br><b {font_size}>{(player_games['PLUS_MINUS'].mean()).round(1)}</b></p>", unsafe_allow_html=True)
-            cl12.markdown(f"<p style='text-align: center;'>FT_PCT<br><b {font_size}>{(player_games[player_games['FT_PCT'] != 0]['FT_PCT_CLEAN'].mean()*100).round(1)}%</b></p>", unsafe_allow_html=True)
+            cl12.markdown(f"<p style='text-align: center;'>FT_PCT<br><b {font_size}>{(player_games[player_games['FT_PCT_CLEAN'] != 0]['FT_PCT_CLEAN'].mean()*100).round(1)}%</b></p>", unsafe_allow_html=True)
             cl13.markdown(f"<p style='text-align: center;'>MIN<br><b {font_size}>{(player_games['MIN'].mean()).round(1)}</b></p>", unsafe_allow_html=True)
 except:
     pass
