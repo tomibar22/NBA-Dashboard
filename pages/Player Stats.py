@@ -96,7 +96,7 @@ try:
             cl9.markdown(f"<p style='text-align: center;'>TOV<br><b {font_size}>{(player_games['TOV'].mean()).round(1)}</b></p>", unsafe_allow_html=True)
             cl10.markdown(f"<p style='text-align: center;'>PF<br><b {font_size}>{(player_games['PF'].mean()).round(1)}</b></p>", unsafe_allow_html=True)
             cl11.markdown(f"<p style='text-align: center;'>PLUS_MINUS<br><b {font_size}>{(player_games['PLUS_MINUS'].mean()).round(1)}</b></p>", unsafe_allow_html=True)
-            cl12.markdown(f"<p style='text-align: center;'>FT_PCT<br><b {font_size}>{(player_games['FT_PCT_CLEAN'].mean()*100).round(1)}%</b></p>", unsafe_allow_html=True)
+            cl12.markdown(f"<p style='text-align: center;'>FT_PCT<br><b {font_size}>{(player_games[player_games['FT_PCT'] != 0]['FT_PCT_CLEAN'].mean()*100).round(1)}%</b></p>", unsafe_allow_html=True)
             cl13.markdown(f"<p style='text-align: center;'>MIN<br><b {font_size}>{(player_games['MIN'].mean()).round(1)}</b></p>", unsafe_allow_html=True)
 except:
     pass
@@ -118,13 +118,11 @@ try:
         'EFG_PCT': [stat, 'FGM', 'FGA', 'WL']
             }
 
-    fig = px.line(player_games[player_games['FT_PCT'] != 0] if 'FT_PCT' in stat else player_games, x=player_games.index, y=stat, markers=True, 
+    fig = px.line(player_games, x=player_games.index, y=stat, markers=True, 
                   hover_data=pct[stat] if 'PCT' in stat else ['WL'],
                   text=stat)
     if 'PCT' in stat:
         y_max = player_games[f'{stat}_CLEAN'].max() *100 +10
-        if 'FT_PCT' in stat:
-            player_games = player_games[player_games['FT_PCT'] != '0%']
     else:
         y_max = None
     fig.update_layout(xaxis=dict(autorange="reversed", title_text='', tickfont=dict(size=17)),
