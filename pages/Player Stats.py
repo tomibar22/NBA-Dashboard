@@ -118,7 +118,7 @@ try:
         'EFG_PCT': [stat, 'FGM', 'FGA', 'WL']
             }
 
-    fig = px.line(player_games, x=player_games.index, y=stat, markers=True, 
+    fig = px.line(player_games[player_games['FT_PCT'] != 0] if 'FT_PCT' in stat else player_games, x=player_games.index, y=stat, markers=True, 
                   hover_data=pct[stat] if 'PCT' in stat else ['WL'],
                   text=stat)
     if 'PCT' in stat:
