@@ -123,6 +123,8 @@ try:
                   text=stat)
     if 'PCT' in stat:
         y_max = player_games[f'{stat}_CLEAN'].max() *100 +10
+        if 'FT_PCT' in stat:
+            player_games = player_games[player_games['FT_PCT'] != 0]
     else:
         y_max = None
     fig.update_layout(xaxis=dict(autorange="reversed", title_text='', tickfont=dict(size=17)),
