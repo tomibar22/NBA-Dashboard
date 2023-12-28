@@ -31,7 +31,7 @@ def search_player_names(search_term: str) -> list[any]:
 
 
 best_players = get_player_stats_per_game(current_season, 'Regular Season')    
-number_of_buttons = 60
+number_of_buttons = 70
 best_players = sorted_df(best_players,'PTS', slider=None).head(number_of_buttons)
 best_players = best_players['PLAYER']
 chip_items = [sac.ChipItem(label=player) for player in best_players]
