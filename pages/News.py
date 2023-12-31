@@ -88,8 +88,8 @@ bleacher_news = get_news("bleacher-report")
 news = nba_news + nba_canada_news + slam_news + bleacher_news
 
 
-@retry
-@st.cache_data
+
+@st.cache_data(ttl=timedelta(hours=1))
 def get_article_date(url, source):
     try:
         response = requests.get(url)
