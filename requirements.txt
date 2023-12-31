@@ -44,6 +44,7 @@ ipython-genutils==0.2.0
 ipywidgets==8.0.6
 isoduration==20.11.0
 jedi==0.18.2
+Jinja2==3.1.2
 json5==0.9.14
 jsonpointer==2.3
 jsonschema==4.20.0
@@ -145,7 +146,6 @@ toolz==0.12.0
 tornado==6.4
 tqdm==4.66.1
 traitlets==5.9.0
-tweepy==4.14.0
 txt2tags==3.8
 typing_extensions==4.8.0
 tzdata==2023.3
