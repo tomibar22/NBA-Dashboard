@@ -209,6 +209,6 @@ with c4:
             st.markdown(f"<span style='font-size: 22px;'>{row['Text']}</span>", unsafe_allow_html=True)
             st.markdown(f"{row['Likes']} Likes", unsafe_allow_html=True)
             if row['Pictures']:
-                st.image(row['Pictures'], unsafe_allow_html=True)
+                st.image(row['Pictures'])
             st.markdown(row['Link'], unsafe_allow_html=True)
         st.markdown('')
