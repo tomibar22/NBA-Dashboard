@@ -181,7 +181,7 @@ my_bar.empty()
 
 c1,c2,c3,c4,c5 = st.columns([1,3,0.5,2,1])
 with c2:
-    st.markdown('<h2 style="text-align: center;">Tweets</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 style="text-align: center;">Articles</h2>', unsafe_allow_html=True)
     for article in news:
         st.markdown('##')
         with st.container(border=True):
@@ -201,11 +201,12 @@ with c4:
     tweets_df = get_tweets()
 
     st.markdown('<h2 style="text-align: center;">Tweets</h2>', unsafe_allow_html=True)
+    st.markdown('##')
 
     for index, row in tweets_df.iterrows():
         with st.container(border=True):
             st.markdown(row['User Name'], unsafe_allow_html=True)
-            st.markdown(row['Text'], unsafe_allow_html=True)
+            st.markdown(f"<p style='fotn-size: 18px;'>{row['Text']}</p>", unsafe_allow_html=True)
             st.markdown(f"{row['Likes']} Likes", unsafe_allow_html=True)
             if row['Pictures']:
                 st.image(row['Pictures'], unsafe_allow_html=True)
