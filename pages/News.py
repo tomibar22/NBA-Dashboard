@@ -206,7 +206,7 @@ with c4:
     for index, row in tweets_df.iterrows():
         with st.container(border=True):
             st.markdown(row['User Name'], unsafe_allow_html=True)
-            st.markdown(f"<p style='fotn-size: 18px;'>{row['Text']}</p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='fotn-size: 25px;'>{row['Text']}</p>", unsafe_allow_html=True)
             st.markdown(f"{row['Likes']} Likes", unsafe_allow_html=True)
             if row['Pictures']:
                 st.image(row['Pictures'], unsafe_allow_html=True)
