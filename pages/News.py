@@ -163,7 +163,10 @@ for idx, article in enumerate(news):
         article['image'] = article_image
     else:
         # Handle the case where get_article_date returns None
-        article['date'] = article_date
+        try:
+            article['date'] = article_date
+        except NameError:
+            article['date'] = ""
         article['image'] = ""
 
 news = sorted(news, key=lambda x: x['date'], reverse=True)
