@@ -158,30 +158,33 @@ def get_tweets():
     text_check = set()
 
     for tweet in tweets:
-        if tweet['text'] in text_check:
-            continue
-        else:
-            if isinstance(tweet, list): 
-                tweet = tweet[0] 
-            elif isinstance(tweet, dict):
-                tweet = tweet
+        try:
+            if tweet['text'] in text_check:
+                continue
             else:
-                continue 
+                if isinstance(tweet, list): 
+                    tweet = tweet[0] 
+                elif isinstance(tweet, dict):
+                    tweet = tweet
+                else:
+                    continue 
 
-            user_name = tweet['user']['name']
-            tweet_info = {
-                'User Name': user_name,
-                'Text': tweet['text'],
-                'Date': tweet['date'],
-                'Likes': tweet['stats']['likes'],
-                'Link': tweet['link']
-            }
+                user_name = tweet['user']['name']
+                tweet_info = {
+                    'User Name': user_name,
+                    'Text': tweet['text'],
+                    'Date': tweet['date'],
+                    'Likes': tweet['stats']['likes'],
+                    'Link': tweet['link']
+                }
 
-            if 'pictures' in tweet:
-                tweet_info['Pictures'] = ', '.join(tweet['pictures'])
+                if 'pictures' in tweet:
+                    tweet_info['Pictures'] = ', '.join(tweet['pictures'])
 
-            tweet_data.append(tweet_info)
-            text_check.add(tweet['text'])
+                tweet_data.append(tweet_info)
+                text_check.add(tweet['text'])
+        except IndexError:
+            continue
 
 
     df = pd.DataFrame(tweet_data)
