@@ -197,8 +197,12 @@ with c3:
     tweets_df = get_tweets()
 
     for index, row in tweets_df.iterrows():
-        st.markdown(row['User Name'])
-        st.markdown(row['Text'])
-        st.markdown(row['Date'])
-        st.markdown(row['Likes'])
-        st.markdown(row['Link'])
+        with st.container(border=True):
+            st.markdown(row['User Name'])
+            st.markdown(row['Text'])
+            st.markdown(f"{row['Likes']} Likes")
+            if row['Pictures']:
+                st.image(row['Pictures'])
+            st.markdown(row['Date'])
+            st.markdown(row['Link'])
+        st.markdown('')
