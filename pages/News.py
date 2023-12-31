@@ -179,7 +179,7 @@ my_bar.empty()
 
 
 
-c1,c2,c3,c4,c5 = st.columns([1,3,0.5,2,1])
+c1,c2,c3,c4,c5 = st.columns([1,2.5,0.3,2,1])
 with c2:
     st.markdown('<h2 style="text-align: center;">Articles</h2>', unsafe_allow_html=True)
     for article in news:
