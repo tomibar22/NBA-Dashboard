@@ -141,7 +141,7 @@ def get_player_games(player_id, season, season_type, stat):
     
     return player_games
 
-@st.cache_data(ttl=timedelta(minutes=22))
+@st.cache_data(ttl=timedelta(hours=1))
 def get_tweets():
     scraper = Nitter()
 
