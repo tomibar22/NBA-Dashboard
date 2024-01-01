@@ -29,37 +29,37 @@ def retry(func, retries=3):
     return retry_wrapper
 
 
-if "player" not in st.session_state:
-    st.session_state.player = None
+# if "player" not in st.session_state:
+#     st.session_state.player = None
 
-if "team" not in st.session_state:
-    st.session_state.team = None
-
-
-def clear_box():
-    if st.session_state.player:
-        st.session_state.team = None
-
-    if st.session_state.team:
-        st.session_state.player = None
+# if "team" not in st.session_state:
+#     st.session_state.team = None
 
 
+# def clear_box():
+#     if st.session_state.player:
+#         st.session_state.team = None
 
-players_df = pd.DataFrame(players.get_active_players())
-player_names = list(players_df['full_name'])
-teams_df = pd.DataFrame(teams.get_teams())
-team_nicknames = list(teams_df['nickname'])
+#     if st.session_state.team:
+#         st.session_state.player = None
 
-c1,c2,c3,c4,c5=st.columns([3,2,0.1,2,3])
-player = c2.selectbox('player search' ,player_names, placeholder='Search by player...', index=None, label_visibility='hidden', key="player", on_change=clear_box)
-c3.markdown('<h3 style="padding-top: 27px; text-align: center">/</h3>', unsafe_allow_html=True)
-team = c4.selectbox('team search' ,team_nicknames, placeholder='Search by team...', index=None, label_visibility='hidden', key="team", on_change=clear_box)
 
-if team:
-    team = team.lower().replace(' ', '-')
 
-if player:
-    player = player.split(' ')[1]
+# players_df = pd.DataFrame(players.get_active_players())
+# player_names = list(players_df['full_name'])
+# teams_df = pd.DataFrame(teams.get_teams())
+# team_nicknames = list(teams_df['nickname'])
+
+# c1,c2,c3,c4,c5=st.columns([3,2,0.1,2,3])
+# player = c2.selectbox('player search' ,player_names, placeholder='Search by player...', index=None, label_visibility='hidden', key="player", on_change=clear_box)
+# c3.markdown('<h3 style="padding-top: 27px; text-align: center">/</h3>', unsafe_allow_html=True)
+# team = c4.selectbox('team search' ,team_nicknames, placeholder='Search by team...', index=None, label_visibility='hidden', key="team", on_change=clear_box)
+
+# if team:
+#     team = team.lower().replace(' ', '-')
+
+# if player:
+#     player = player.split(' ')[1]
 
 
 @st.cache_data(ttl=timedelta(hours=1))
@@ -67,8 +67,9 @@ def get_news(source):
 
     url = "https://nba-latest-news.p.rapidapi.com/articles"
 
-    querystring = {"player":player,
-                   "team": team,
+    querystring = {
+                #    "player":player,
+                #    "team": team,
                    "source": source,
                    "limit": "10"}
 
