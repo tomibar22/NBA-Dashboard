@@ -145,12 +145,17 @@ def get_player_games(player_id, season, season_type, stat):
 def get_tweets():
     scraper = Nitter()
 
-    woj_tweets = scraper.get_tweets('wojespn', mode='user', number=5)
-    charania_tweets = scraper.get_tweets('ShamsCharania', mode='user', number=5)
-    stein_tweets = scraper.get_tweets('TheSteinLine', mode='user', number=5)
-    windhorst_tweets = scraper.get_tweets('WindhorstESPN', mode='user', number=5)
-    haynes_tweets = scraper.get_tweets('ChrisBHaynes', mode='user', number=5)
-    tweets = woj_tweets['tweets'] + charania_tweets['tweets'] + stein_tweets['tweets'] + windhorst_tweets['tweets'] + haynes_tweets['tweets']
+    woj = scraper.get_tweets('wojespn', mode='user', number=5)
+    charania = scraper.get_tweets('ShamsCharania', mode='user', number=5)
+    stein = scraper.get_tweets('TheSteinLine', mode='user', number=5)
+    windhorst = scraper.get_tweets('WindhorstESPN', mode='user', number=5)
+    haynes = scraper.get_tweets('ChrisBHaynes', mode='user', number=5)
+    nichols = scraper.get_tweets('Rachel__Nichols', mode='user', number=5)
+    nekias = scraper.get_tweets('stevejones20', mode='user', number=5)
+    stevejones = scraper.get_tweets('NekiasNBA', mode='user', number=5)
+    occonor = scraper.get_tweets('KevinOConnorNBA', mode='user', number=5)
+    lowe = scraper.get_tweets('ZachLowe_NBA', mode='user', number=5)
+    tweets = woj['tweets'] + charania['tweets'] + stein['tweets'] + windhorst['tweets'] + haynes['tweets'] + nichols['tweets'] + nekias['tweets'] + stevejones['tweets'] + occonor['tweets'] + lowe['tweets']
 
     
     tweet_data = []
