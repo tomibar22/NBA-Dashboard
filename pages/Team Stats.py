@@ -58,17 +58,17 @@ def get_team_games(stat):
     columns_to_convert = ['PTS', 'AST', 'REB', 'FGM', 'FGA', 'FG3M', 'FG3A', 'BLK', 'STL','FTM', 'FTA', 'PF', 'W', 'L']
     team_games[columns_to_convert] = team_games[columns_to_convert].astype(int)
     condition = team_games['FGA'] >= 10
-    team_games.loc[condition, 'EFG_PCT'] = (team_games.loc[condition, 'FGM'] + (0.5 * team_games.loc[condition, 'FG3M'])) / team_games.loc[condition, 'FGA']
-    team_games[['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'W_PCT_CLEAN', 'EFG_PCT_CLEAN']] = team_games[['FG_PCT', 'FG3_PCT', 'FT_PCT', 'W_PCT', 'EFG_PCT']]
+    team_games.loc[condition, 'TS_PCT'] = team_games.loc[condition, 'PTS'] / (2 * (team_games.loc[condition, 'FGA'] + 0.44 * team_games.loc[condition, 'FTA']))
+    team_games[['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'W_PCT_CLEAN', 'TS_PCT_CLEAN']] = team_games[['FG_PCT', 'FG3_PCT', 'FT_PCT', 'W_PCT', 'TS_PCT']]
     team_games[['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'W_PCT_CLEAN']] = team_games[['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'W_PCT_CLEAN']].apply(pd.to_numeric, errors='coerce')
-    percentage_columns = ['FG_PCT', 'FG3_PCT', 'FT_PCT', 'W_PCT', 'EFG_PCT']
+    percentage_columns = ['FG_PCT', 'FG3_PCT', 'FT_PCT', 'W_PCT', 'TS_PCT']
     team_games[percentage_columns] = (team_games[percentage_columns] * 100).round(0).astype(int).astype(str) + '%'
     if stat:
         columns_to_move_mapping = {
         'FG_PCT': [stat, 'FGM', 'FGA'],
         'FG3_PCT': [stat, 'FG3M', 'FG3A'],
         'FT_PCT': [stat, 'FTM', 'FTA'],
-        'EFG_PCT': [stat, 'FGM', 'FGA']
+        'TS_PCT': [stat, 'FGM', 'FGA']
          }
         current_columns = team_games.columns.tolist()
         new_position = 2
@@ -149,7 +149,7 @@ try:
         font_size = "style='font-size: 22px'"
         color = 'color:#138D75'
         cl1.markdown(f"<p style='text-align: center;'>PTS<br><b {font_size}>{(team_games['PTS'].mean()).round(1)}</b></p>", unsafe_allow_html=True)
-        cl2.markdown(f"<p style='text-align: center;'>EFG_PCT<br><b {font_size}>{(team_games['EFG_PCT_CLEAN'].mean()*100).round(1)}%</b></p>", unsafe_allow_html=True)
+        cl2.markdown(f"<p style='text-align: center;'>TS_PCT<br><b {font_size}>{(team_games['TS_PCT_CLEAN'].mean()*100).round(1)}%</b></p>", unsafe_allow_html=True)
         cl3.markdown(f"<p style='text-align: center;'>AST<br><b {font_size}>{(team_games['AST'].mean()).round(1)}</b></p>", unsafe_allow_html=True)
         cl4.markdown(f"<p style='text-align: center;'>REB</b><br><b {font_size}>{(team_games['REB'].mean()).round(1)}</b></p>", unsafe_allow_html=True)
         cl5.markdown(f"<p style='text-align: center;'>FG_PCT<br><b {font_size}>{(team_games['FG_PCT_CLEAN'].mean()*100).round(1)}%</b></p>", unsafe_allow_html=True)
@@ -165,7 +165,7 @@ except:
 if team:
     cl1, cl2, cl3 = st.columns([4,3,4])
     with cl2:
-        stat = st.selectbox('Stat', ['PTS', 'EFG_PCT', 'AST', 'FG_PCT', 'FGM', 'FGA', 'FG3_PCT', 'FG3M', 'FG3A', 
+        stat = st.selectbox('Stat', ['PTS', 'TS_PCT', 'AST', 'FG_PCT', 'FGM', 'FGA', 'FG3_PCT', 'FG3M', 'FG3A', 
                                     'REB', 'OREB', 'DREB', 'BLK', 'STL', 'TOV', 'PF', 'FT_PCT', 'FTM', 'FTA', 'WL'], label_visibility='hidden', index=0)
 
 
@@ -177,7 +177,7 @@ if team:
             'FG_PCT': [stat, 'FGM', 'FGA', 'WL'],
             'FG3_PCT': [stat, 'FG3M', 'FG3A', 'WL'],
             'FT_PCT': [stat, 'FTM', 'FTA', 'WL'],
-            'EFG_PCT': [stat, 'FGM', 'FGA', 'WL']
+            'TS_PCT': [stat, 'FGM', 'FGA', 'WL']
                 }
 
         fig = px.line(team_games, x=team_games.index, y=stat, markers=True, 
@@ -222,7 +222,7 @@ if team:
 
         cl1, cl2, cl3 = st.columns([1,5,1])
         with cl2:
-            team_games = team_games.drop(columns=['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'EFG_PCT_CLEAN'])
+            team_games = team_games.drop(columns=['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'TS_PCT_CLEAN'])
             st.markdown('')
             st.dataframe(team_games, use_container_width=True)
 

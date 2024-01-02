@@ -6,14 +6,14 @@ from ntscraper import Nitter
 
 def sorted_df(df, stat, slider):
     current_columns = df.columns.tolist()
-    percentage_columns = ['FG_PCT', 'FG3_PCT', 'FT_PCT', 'EFG_PCT']
+    percentage_columns = ['FG_PCT', 'FG3_PCT', 'FT_PCT', 'TS_PCT']
     df[percentage_columns] = (df[percentage_columns] * 100).round(0).astype(int).astype(str) + '%'
 
     pct_col_dict = {
         'FG_PCT': [stat, 'FGM', 'FGA'],
         'FG3_PCT': [stat, 'FG3M', 'FG3A'],
         'FT_PCT': [stat, 'FTM', 'FTA'],
-        'EFG_PCT': [stat, 'FGM', 'FGA']
+        'TS_PCT': [stat, 'FGM', 'FGA']
     }
 
     if stat in pct_col_dict:
@@ -69,8 +69,8 @@ def get_player_stats_per_game(season, season_type):
     players_df = players_df.rename(columns={'TEAM_ABBREVIATION': 'TEAM',
                                         'PLAYER_NAME': 'PLAYER'})
     condition = players_df['FGA'] >= 10
-    players_df.loc[condition, 'EFG_PCT'] = (players_df.loc[condition, 'FGM'] + (0.5 * players_df.loc[condition, 'FG3M'])) / players_df.loc[condition, 'FGA']
-    players_df = players_df.dropna(subset='EFG_PCT')
+    players_df.loc[condition, 'TS_PCT'] = players_df.loc[condition, 'PTS'] / (2 * (players_df.loc[condition, 'FGA'] + 0.44 * players_df.loc[condition, 'FTA']))
+    players_df = players_df.dropna(subset='TS_PCT')
     return players_df
 
 
@@ -83,8 +83,8 @@ def get_rookie_stats_per_game(season_type):
     rookie_df = rookie_df.rename(columns={'TEAM_ABBREVIATION': 'TEAM',
                                         'PLAYER_NAME': 'PLAYER'})
     condition = rookie_df['FGA'] >= 5
-    rookie_df.loc[condition, 'EFG_PCT'] = (rookie_df.loc[condition, 'FGM'] + (0.5 * rookie_df.loc[condition, 'FG3M'])) / rookie_df.loc[condition, 'FGA']
-    rookie_df = rookie_df.dropna(subset='EFG_PCT')
+    rookie_df.loc[condition, 'TS_PCT'] = rookie_df.loc[condition, 'PTS'] / (2 * (rookie_df.loc[condition, 'FGA'] + 0.44 * rookie_df.loc[condition, 'FTA']))
+    rookie_df = rookie_df.dropna(subset='TS_PCT')
     return rookie_df
 
 
@@ -95,7 +95,7 @@ def get_team_stats_per_game(season, season_type):
     teams_df = teams_df[['TEAM_NAME', 'WL', 'W_PCT', 'PTS', 'AST', 'REB', 'OREB', 'DREB', 'FG_PCT', 'FGM', 'FGA', 'FG3_PCT', 'FG3M', 'FG3A', 'BLK', 'STL', 'TOV', 'PF', 'PLUS_MINUS', 'FT_PCT', 'FTM', 'FTA']]
     teams_df = teams_df.rename(columns={'TEAM_NAME': 'TEAM'})
     condition = teams_df['FGA'] >= 10
-    teams_df.loc[condition, 'EFG_PCT'] = (teams_df.loc[condition, 'FGM'] + (0.5 * teams_df.loc[condition, 'FG3M'])) / teams_df.loc[condition, 'FGA']
+    teams_df.loc[condition, 'TS_PCT'] = teams_df.loc[condition, 'PTS'] / (2 * (teams_df.loc[condition, 'FGA'] + 0.44 * teams_df.loc[condition, 'FTA']))
     return teams_df
 
 
@@ -108,11 +108,11 @@ def get_player_games(player_id, season, season_type, stat):
     columns_to_convert = ['PTS', 'AST', 'REB', 'FGM', 'FGA', 'FG3M', 'FG3A', 'BLK', 'STL', 'PLUS_MINUS', 'FTM', 'FTA', 'PF', 'MIN']
     player_games[columns_to_convert] = player_games[columns_to_convert].astype(int)
     condition = player_games['FGA'] >= 10
-    player_games.loc[condition, 'EFG_PCT'] = (player_games.loc[condition, 'FGM'] + (0.5 * player_games.loc[condition, 'FG3M'])) / player_games.loc[condition, 'FGA']
-    player_games = player_games.dropna(subset='EFG_PCT')
-    player_games[['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'EFG_PCT_CLEAN']] = player_games[['FG_PCT', 'FG3_PCT', 'FT_PCT', 'EFG_PCT']]
-    player_games[['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'EFG_PCT_CLEAN']] = player_games[['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'EFG_PCT']].apply(pd.to_numeric, errors='coerce')
-    percentage_columns = ['FG_PCT', 'FG3_PCT', 'FT_PCT',  'EFG_PCT']
+    player_games.loc[condition, 'TS_PCT'] = player_games.loc[condition, 'PTS'] / (2 * (player_games.loc[condition, 'FGA'] + 0.44 * player_games.loc[condition, 'FTA']))
+    player_games = player_games.dropna(subset='TS_PCT')
+    player_games[['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'TS_PCT_CLEAN']] = player_games[['FG_PCT', 'FG3_PCT', 'FT_PCT', 'TS_PCT']]
+    player_games[['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'TS_PCT_CLEAN']] = player_games[['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'TS_PCT']].apply(pd.to_numeric, errors='coerce')
+    percentage_columns = ['FG_PCT', 'FG3_PCT', 'FT_PCT',  'TS_PCT']
     player_games[percentage_columns] = (player_games[percentage_columns] * 100).round(0).astype(int).astype(str) + '%'
 
     if stat:

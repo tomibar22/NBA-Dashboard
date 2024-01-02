@@ -86,7 +86,7 @@ try:
             cl1, cl2, cl3, cl4, cl5, cl6, cl7, cl8, cl9, cl10, cl11, cl12, cl13 = st.columns(13)
             font_size = "style='font-size: 22px'"
             cl1.markdown(f"<p style='text-align: center;'>PTS<br><b {font_size}>{(player_games['PTS'].mean()).round(1)}</b></p>", unsafe_allow_html=True)
-            cl2.markdown(f"<p style='text-align: center;'>EFG_PCT</b><br><b {font_size}>{(player_games['EFG_PCT_CLEAN'].mean()*100).round(1)}%</b></p>", unsafe_allow_html=True)
+            cl2.markdown(f"<p style='text-align: center;'>TS_PCT</b><br><b {font_size}>{(player_games['TS_PCT_CLEAN'].mean()*100).round(1)}%</b></p>", unsafe_allow_html=True)
             cl3.markdown(f"<p style='text-align: center;'>AST<br><b {font_size}>{(player_games['AST'].mean()).round(1)}</b></p>", unsafe_allow_html=True)
             cl4.markdown(f"<p style='text-align: center;'>REB</b><br><b {font_size}>{(player_games['REB'].mean()).round(1)}</b></p>", unsafe_allow_html=True)
             cl5.markdown(f"<p style='text-align: center;'>FG_PCT<br><b {font_size}>{(player_games['FG_PCT_CLEAN'].mean()*100).round(1)}%</b></p>", unsafe_allow_html=True)
@@ -104,7 +104,7 @@ except:
 cl1, cl2, cl3 = st.columns([4,3,4])
 with cl2:
     if player:
-        stat = st.selectbox('Stat', ['PTS', 'EFG_PCT', 'AST', 'FG_PCT', 'FGM', 'FGA', 'FG3_PCT', 'FG3M', 'FG3A', 
+        stat = st.selectbox('Stat', ['PTS', 'TS_PCT', 'AST', 'FG_PCT', 'FGM', 'FGA', 'FG3_PCT', 'FG3M', 'FG3A', 
                                 'REB', 'OREB', 'DREB', 'BLK', 'STL', 'TOV', 'PF', 'PLUS_MINUS', 'FT_PCT', 'FTM', 'FTA', 'MIN'], label_visibility='hidden')
 
 
@@ -115,7 +115,7 @@ try:
         'FG_PCT': [stat, 'FGM', 'FGA', 'WL'],
         'FG3_PCT': [stat, 'FG3M', 'FG3A', 'WL'],
         'FT_PCT': [stat, 'FTM', 'FTA', 'WL'],
-        'EFG_PCT': [stat, 'FGM', 'FGA', 'WL']
+        'TS_PCT': [stat, 'FGM', 'FGA', 'WL']
             }
 
     fig = px.line(player_games, x=player_games.index, y=stat, markers=True, 
@@ -156,7 +156,7 @@ try:
 
     cl1, cl2, cl3 = st.columns([1,5,1])
     with cl2:
-        player_games = player_games.drop(columns=['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'EFG_PCT_CLEAN'])
+        player_games = player_games.drop(columns=['FG_PCT_CLEAN', 'FG3_PCT_CLEAN', 'FT_PCT_CLEAN', 'TS_PCT_CLEAN'])
         st.markdown('')
         with st.expander('Show Full Data'):
             st.dataframe(player_games, use_container_width=True)

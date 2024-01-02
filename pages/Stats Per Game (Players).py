@@ -16,7 +16,7 @@ with st.container(border=True):
 
     cl1, cl2, cl3, cl4, cl5 = st.columns([2,4,2,2,2])
     with cl2:
-        stat = st.selectbox('Stat',['PTS', 'EFG_PCT', 'AST', 'REB', 'OREB', 'DREB',
+        stat = st.selectbox('Stat',['PTS', 'TS_PCT', 'AST', 'REB', 'OREB', 'DREB',
                                     'FG_PCT', 'FGM', 'FGA', 'FG3_PCT', 'FG3M', 'FG3A', 
                                     'BLK', 'STL', 'TOV', 'PF', 'PLUS_MINUS', 
                                     'FT_PCT', 'FTM', 'FTA', 'MIN',  'AGE'], label_visibility='hidden')
@@ -24,7 +24,7 @@ with st.container(border=True):
                 'FG_PCT': [stat, 'FGM', 'FGA'],
                 'FG3_PCT': [stat, 'FG3M', 'FG3A'],
                 'FT_PCT': [stat, 'FTM', 'FTA'],
-                'EFG_PCT': [stat, 'FGM', 'FGA']
+                'TS_PCT': [stat, 'FGM', 'FGA']
                 }
         
     with cl3:
@@ -83,7 +83,7 @@ with st.container(border=True):
 
     cl1, cl2, cl3, cl4 = st.columns([2,6,2,2])
     with cl2:
-        stat = st.selectbox('Stat',['PTS', 'EFG_PCT',  'AST', 'REB', 'OREB', 'DREB', 
+        stat = st.selectbox('Stat',['PTS', 'TS_PCT',  'AST', 'REB', 'OREB', 'DREB', 
                                     'FG_PCT', 'FGM', 'FGA', 'FG3_PCT', 'FG3M', 'FG3A', 
                                     'BLK', 'STL', 'TOV', 'PF', 'PLUS_MINUS', 
                                     'FT_PCT', 'FTM', 'FTA', 'MIN',  'AGE'], label_visibility='hidden', key='rookie-stats')
@@ -109,7 +109,7 @@ with st.container(border=True):
                     'FG_PCT': [stat, 'FGM', 'FGA'],
                     'FG3_PCT': [stat, 'FG3M', 'FG3A'],
                     'FT_PCT': [stat, 'FTM', 'FTA'],
-                    'EFG_PCT': [stat, 'FGM', 'FGA']
+                    'TS_PCT': [stat, 'FGM', 'FGA']
                     }
         fig = px.bar(rookie_df.head(10), x='PLAYER', y=stat,
                     text=stat,

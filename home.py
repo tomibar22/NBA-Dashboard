@@ -113,8 +113,8 @@ def get_yesterday_stats():
         stats = stats.dropna(subset='MIN')
         stats['MIN'] = stats['MIN'].apply(lambda x: int(x.split('.')[0]))
         condition = stats['FGA'] >= 10
-        stats.loc[condition, 'EFG_PCT'] = (stats.loc[condition, 'FGM'] + (0.5 * stats.loc[condition, 'FG3M'])) / stats.loc[condition, 'FGA']
-        stats = stats.dropna(subset='EFG_PCT')
+        stats.loc[condition, 'TS_PCT'] = stats.loc[condition, 'PTS'] / (2 * (stats.loc[condition, 'FGA'] + 0.44 * stats.loc[condition, 'FTA']))
+        stats = stats.dropna(subset='TS_PCT')
         stats = stats.rename(columns={'TEAM_ABBREVIATION': 'TEAM',
                                       'PLAYER_NAME': 'PLAYER'})
         yesterday_stats.append(stats)
@@ -146,10 +146,10 @@ def get_team_stats():
     columns_to_convert = ['PTS', 'AST', 'REB', 'FGM', 'FGA', 'FG3M', 'FG3A', 'FTM', 'FTA', 'OREB', 'DREB', 'BLK', 'STL']
     team_stats[columns_to_convert] = team_stats[columns_to_convert].astype(int)
     condition = team_stats['FGA'] >= 10
-    team_stats.loc[condition, 'EFG_PCT'] = (team_stats.loc[condition, 'FGM'] + (0.5 * team_stats.loc[condition, 'FG3M'])) / team_stats.loc[condition, 'FGA']
-    percentage_columns = ['FG_PCT', 'FG3_PCT', 'FT_PCT', 'W_PCT', 'EFG_PCT']
+    team_stats.loc[condition, 'TS_PCT'] = (team_stats.loc[condition, 'FGM'] + (0.5 * team_stats.loc[condition, 'FG3M'])) / team_stats.loc[condition, 'FGA']
+    percentage_columns = ['FG_PCT', 'FG3_PCT', 'FT_PCT', 'W_PCT', 'TS_PCT']
     team_stats[percentage_columns] = (team_stats[percentage_columns] * 100).round(0).astype(int).astype(str) + '%'
-    team_stats = team_stats[['TEAM', 'MATCHUP', 'PTS', 'AST', 'EFG_PCT', 'FG_PCT', 'FGM', 'FGA', 'FG3_PCT', 'FG3M', 'FG3A', 
+    team_stats = team_stats[['TEAM', 'MATCHUP', 'PTS', 'AST', 'TS_PCT', 'FG_PCT', 'FGM', 'FGA', 'FG3_PCT', 'FG3M', 'FG3A', 
                              'REB', 'OREB', 'DREB', 'BLK', 'STL', 'TOV', 'PF', 'FT_PCT', 'FTM', 'FTA', 'WL', 'W','L', 'W_PCT']]
     return team_stats
 
@@ -164,7 +164,7 @@ def team_stats_leaders(stat):
         'FG_PCT': [stat, 'FGM', 'FGA'],
         'FG3_PCT': [stat, 'FG3M', 'FG3A'],
         'FT_PCT': [stat, 'FTM', 'FTA'],
-        'EFG_PCT': [stat, 'FGM', 'FGA']
+        'TS_PCT': [stat, 'FGM', 'FGA']
     }
     if stat in pct_col_dict:
         team_stats_leaders = get_team_stats().dropna() \
@@ -238,14 +238,14 @@ try:
 
     with col2:
         with st.expander("Player Stats"):
-            player_stat = st.selectbox('Sort By:',['PTS', 'EFG_PCT', 'AST', 'REB', 'OREB', 'DREB', 'FGM', 'FGA', 'FG_PCT', 'FG3M', 'FG3A', 'FG3_PCT', 
+            player_stat = st.selectbox('Sort By:',['PTS', 'TS_PCT', 'AST', 'REB', 'OREB', 'DREB', 'FGM', 'FGA', 'FG_PCT', 'FG3M', 'FG3A', 'FG3_PCT', 
                                                    'BLK', 'STL', 'PLUS_MINUS', 'PF', 'FT_PCT', 'MIN'], label_visibility='hidden')
 
             pct =  {
                 'FG_PCT': [player_stat, 'FGM', 'FGA'],
                 'FG3_PCT': [player_stat, 'FG3M', 'FG3A'],
                 'FT_PCT': [player_stat, 'FTM', 'FTA'],
-                'EFG_PCT': [player_stat, 'FGM', 'FGA']
+                'TS_PCT': [player_stat, 'FGM', 'FGA']
                 }
             
             if 'PCT' in player_stat:
@@ -294,13 +294,13 @@ try:
     col1, col2, col3 = st.columns([1,4,1])
     with col2:
         with st.expander("Team Stats"):
-            team_stat = st.selectbox('Sort By:', ['PTS', 'EFG_PCT', 'AST', 'REB', 'OREB', 'DREB', 'FG_PCT', 'FG3_PCT', 'BLK', 'STL', 'TOV', 'PF', 'FT_PCT'], label_visibility='hidden')
+            team_stat = st.selectbox('Sort By:', ['PTS', 'TS_PCT', 'AST', 'REB', 'OREB', 'DREB', 'FG_PCT', 'FG3_PCT', 'BLK', 'STL', 'TOV', 'PF', 'FT_PCT'], label_visibility='hidden')
             team_df = team_stats_leaders(team_stat)
             pct = {
                 'FG_PCT': [team_stat, 'FGM', 'FGA', 'WL'],
                 'FG3_PCT': [team_stat, 'FG3M', 'FG3A', 'WL'],
                 'FT_PCT': [team_stat, 'FTM', 'FTA', 'WL'],
-                'EFG_PCT': [team_stat, 'FGM', 'FGA', 'WL']
+                'TS_PCT': [team_stat, 'FGM', 'FGA', 'WL']
             }
             if '100%' in team_df[team_stat].unique():
                 team_df = team_df.loc[team_df[team_stat] != '100%']

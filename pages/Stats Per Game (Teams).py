@@ -6,7 +6,7 @@ from datetime import date
 from data_processing import sorted_df, get_current_nba_season, get_team_stats_per_game
 st.set_page_config(layout="wide")
 
-stat_options = ['W_PCT', 'PTS', 'EFG_PCT', 'AST', 'REB', 'OREB', 'DREB', 
+stat_options = ['W_PCT', 'PTS', 'TS_PCT', 'AST', 'REB', 'OREB', 'DREB', 
                 'FG_PCT', 'FGM', 'FGA', 'FG3_PCT', 'FG3M', 'FG3A', 
                 'BLK', 'STL', 'TOV', 'PF', 'PLUS_MINUS', 
                 'FT_PCT', 'FTM', 'FTA']
@@ -33,13 +33,13 @@ with st.container(border=True):
 
 
     def team_stats_leaders(stat):
-        percentage_columns = ['FG_PCT', 'FG3_PCT', 'FT_PCT', 'EFG_PCT']
+        percentage_columns = ['FG_PCT', 'FG3_PCT', 'FT_PCT', 'TS_PCT']
         teams_df[percentage_columns] = (teams_df[percentage_columns] * 100).round(2).astype(int).astype(str) + '%'
         pct_col_dict = {
             'FG_PCT': [stat, 'FGM', 'FGA'],
             'FG3_PCT': [stat, 'FG3M', 'FG3A'],
             'FT_PCT': [stat, 'FTM', 'FTA'],
-            'EFG_PCT': [stat, 'FGM', 'FGA']
+            'TS_PCT': [stat, 'FGM', 'FGA']
         }
         if stat in pct_col_dict:
             team_stats_leaders = teams_df.dropna() \
@@ -83,7 +83,7 @@ with st.container(border=True):
         'FG_PCT': [stat, 'FGM', 'FGA'],
         'FG3_PCT': [stat, 'FG3M', 'FG3A'],
         'FT_PCT': [stat, 'FTM', 'FTA'],
-        'EFG_PCT': [stat, 'FGM', 'FGA'],
+        'TS_PCT': [stat, 'FGM', 'FGA'],
         'W_PCT': [stat, 'WL']
         }
         if 'PCT' in stat:
