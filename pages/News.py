@@ -203,17 +203,23 @@ with c2:
 
             
 with c4:  
-    tweets_df = get_tweets()
+    try:
+        tweets_df = get_tweets()
+        
+        if tweets_df.empty:
+            st.warning("Unable to fetch tweets at this time. Please try again later.")
+        else:
+            st.markdown('<h2 style="text-align: center;">Tweets</h2>', unsafe_allow_html=True)
+            st.markdown('##')
 
-    st.markdown('<h2 style="text-align: center;">Tweets</h2>', unsafe_allow_html=True)
-    st.markdown('##')
-
-    for index, row in tweets_df.iterrows():
-        with st.container(border=True):
-            st.markdown(f"<b>{row['User Name']}</b> [{row['Date'] - timedelta(hours=5)}]", unsafe_allow_html=True)
-            st.markdown(f"<span style='font-size: 22px;'>{row['Text']}</span>", unsafe_allow_html=True)
-            st.markdown(f"{row['Likes']} Likes", unsafe_allow_html=True)
-            if row['Pictures']:
-                st.image(row['Pictures'])
-            st.markdown(row['Link'], unsafe_allow_html=True)
-        st.markdown('')
+            for index, row in tweets_df.iterrows():
+                with st.container(border=True):
+                    st.markdown(f"<b>{row['User Name']}</b> [{row['Date'] - timedelta(hours=5)}]", unsafe_allow_html=True)
+                    st.markdown(f"<span style='font-size: 22px;'>{row['Text']}</span>", unsafe_allow_html=True)
+                    st.markdown(f"{row['Likes']} Likes", unsafe_allow_html=True)
+                    if row['Pictures']:
+                        st.image(row['Pictures'])
+                    st.markdown(row['Link'], unsafe_allow_html=True)
+                st.markdown('')
+    except Exception as e:
+        st.error(f"Error displaying tweets: {str(e)}")
