@@ -170,7 +170,8 @@ for idx, article in enumerate(news):
             article['date'] = ""
         article['image'] = ""
 
-news = sorted(news, key=lambda x: x['date'], reverse=True)
+news = [article for article in news if article['date']]  # Remove articles with empty dates
+news = sorted(news, key=lambda x: x['date'] if isinstance(x['date'], datetime) else datetime.min, reverse=True)
 
 for percent_complete in range(100):
     time.sleep(0.01)
