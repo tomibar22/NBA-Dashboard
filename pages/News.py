@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from dateutil import parser
 import time
 import re
-from data_processing import get_tweets
+from data_processing import get_tweets, display_tweets
 
 st.set_page_config(page_title="Player Stats Browser",
                    layout="wide")
