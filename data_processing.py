@@ -143,57 +143,94 @@ def get_player_games(player_id, season, season_type, stat):
 
 @st.cache_data(ttl=timedelta(hours=1))
 def get_tweets():
-    scraper = Nitter()
-
-    woj = scraper.get_tweets('wojespn', mode='user', number=5)
-    charania = scraper.get_tweets('ShamsCharania', mode='user', number=5)
-    stein = scraper.get_tweets('TheSteinLine', mode='user', number=5)
-    windhorst = scraper.get_tweets('WindhorstESPN', mode='user', number=5)
-    haynes = scraper.get_tweets('ChrisBHaynes', mode='user', number=5)
-    nichols = scraper.get_tweets('Rachel__Nichols', mode='user', number=5)
-    nekias = scraper.get_tweets('stevejones20', mode='user', number=5)
-    stevejones = scraper.get_tweets('NekiasNBA', mode='user', number=5)
-    occonor = scraper.get_tweets('KevinOConnorNBA', mode='user', number=5)
-    lowe = scraper.get_tweets('ZachLowe_NBA', mode='user', number=5)
-    tweets = woj['tweets'] + charania['tweets'] + stein['tweets'] + windhorst['tweets'] + haynes['tweets'] + nichols['tweets'] + nekias['tweets'] + stevejones['tweets'] + occonor['tweets'] + lowe['tweets']
-
+    # List of Nitter instances to try
+    instances = [
+        "https://nitter.net",
+        "https://nitter.1d4.us",
+        "https://nitter.kavin.rocks",
+        "https://nitter.unixfox.eu",
+        "https://nitter.401.pw"
+    ]
     
+    def try_get_tweets(username, scraper):
+        try:
+            return scraper.get_tweets(username, mode='user', number=5)
+        except Exception as e:
+            print(f"Error fetching tweets for {username}: {e}")
+            return {'tweets': []}
+
+    # Try different instances until one works
+    tweets = []
+    for instance in instances:
+        try:
+            scraper = Nitter(instance=instance)
+            
+            # Get tweets from all users
+            users = ['wojespn', 'ShamsCharania', 'TheSteinLine', 'WindhorstESPN',
+                    'ChrisBHaynes', 'Rachel__Nichols', 'stevejones20', 
+                    'NekiasNBA', 'KevinOConnorNBA', 'ZachLowe_NBA']
+            
+            all_tweets = []
+            for user in users:
+                user_tweets = try_get_tweets(user, scraper)
+                all_tweets.extend(user_tweets['tweets'])
+            
+            if all_tweets:  # If we successfully got tweets, break the loop
+                tweets = all_tweets
+                break
+                
+        except Exception as e:
+            print(f"Error with instance {instance}: {e}")
+            continue
+    
+    # Process tweets
     tweet_data = []
-
     text_check = set()
-
+    
     for tweet in tweets:
         try:
-            if tweet['text'] in text_check:
+            if not isinstance(tweet, (dict, list)):
                 continue
-            else:
-                if isinstance(tweet, list): 
-                    tweet = tweet[0] 
-                elif isinstance(tweet, dict):
-                    tweet = tweet
-                else:
-                    continue 
-
-                user_name = tweet['user']['name']
-                tweet_info = {
-                    'User Name': user_name,
-                    'Text': tweet['text'],
-                    'Date': tweet['date'],
-                    'Likes': tweet['stats']['likes'],
-                    'Link': tweet['link']
-                }
-
-                if 'pictures' in tweet:
-                    tweet_info['Pictures'] = ', '.join(tweet['pictures'])
-
-                tweet_data.append(tweet_info)
-                text_check.add(tweet['text'])
-        except IndexError:
+                
+            if isinstance(tweet, list):
+                tweet = tweet[0]
+                
+            text = tweet.get('text')
+            if not text or text in text_check:
+                continue
+                
+            user_name = tweet.get('user', {}).get('name')
+            if not user_name:
+                continue
+                
+            tweet_info = {
+                'User Name': user_name,
+                'Text': text,
+                'Date': tweet.get('date'),
+                'Likes': tweet.get('stats', {}).get('likes', 0),
+                'Link': tweet.get('link', ''),
+                'Pictures': ', '.join(tweet.get('pictures', [])) if 'pictures' in tweet else ''
+            }
+            
+            tweet_data.append(tweet_info)
+            text_check.add(text)
+            
+        except Exception as e:
+            print(f"Error processing tweet: {e}")
             continue
-
-
+    
+    if not tweet_data:
+        # Return empty DataFrame with correct columns if no tweets were fetched
+        return pd.DataFrame(columns=['User Name', 'Text', 'Date', 'Likes', 'Link', 'Pictures'])
+    
     df = pd.DataFrame(tweet_data)
-    df['Date'] = pd.to_datetime(df['Date'], format="%b %d, %Y · %I:%M %p UTC")
+    
+    # Handle date conversion safely
+    try:
+        df['Date'] = pd.to_datetime(df['Date'], format="%b %d, %Y · %I:%M %p UTC")
+    except Exception as e:
+        print(f"Error converting dates: {e}")
+        df['Date'] = pd.to_datetime('now')  # Fallback to current time
+    
     tweets_df = df.sort_values(by='Date', ascending=False).reset_index(drop=True)
-
     return tweets_df
