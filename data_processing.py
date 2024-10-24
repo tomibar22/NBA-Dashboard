@@ -143,94 +143,163 @@ def get_player_games(player_id, season, season_type, stat):
 
 @st.cache_data(ttl=timedelta(hours=1))
 def get_tweets():
-    # List of Nitter instances to try
+    # Expanded list of Nitter instances
     instances = [
         "https://nitter.net",
         "https://nitter.1d4.us",
         "https://nitter.kavin.rocks",
         "https://nitter.unixfox.eu",
-        "https://nitter.401.pw"
+        "https://nitter.401.pw",
+        "https://nitter.cz",
+        "https://nitter.privacydev.net",
+        "https://nitter.projectsegfau.lt",
+        "https://twitter.censors.us",
+        "https://nitter.soopy.moe",
+        "https://nitter.rawbit.ninja",
+        "https://nitter.cutelab.space"
     ]
     
-    def try_get_tweets(username, scraper):
-        try:
-            return scraper.get_tweets(username, mode='user', number=5)
-        except Exception as e:
-            print(f"Error fetching tweets for {username}: {e}")
-            return {'tweets': []}
+    def try_get_tweets(username, scraper, retries=3):
+        for attempt in range(retries):
+            try:
+                time.sleep(1)  # Add delay between requests
+                result = scraper.get_tweets(username, mode='user', number=5)
+                if result and 'tweets' in result and result['tweets']:
+                    return result
+            except Exception as e:
+                print(f"Attempt {attempt + 1} failed for {username}: {e}")
+                if attempt == retries - 1:
+                    return {'tweets': []}
+                time.sleep(2 ** attempt)  # Exponential backoff
+        return {'tweets': []}
 
     # Try different instances until one works
     tweets = []
     for instance in instances:
         try:
-            scraper = Nitter(instance=instance)
+            print(f"Trying instance: {instance}")
+            scraper = Nitter(
+                instance=instance,
+                take_first=True,
+                skip_instance_check=True  # Skip initial check which often fails
+            )
             
             # Get tweets from all users
-            users = ['wojespn', 'ShamsCharania', 'TheSteinLine', 'WindhorstESPN',
-                    'ChrisBHaynes', 'Rachel__Nichols', 'stevejones20', 
-                    'NekiasNBA', 'KevinOConnorNBA', 'ZachLowe_NBA']
+            users = [
+                'wojespn', 'ShamsCharania', 'TheSteinLine', 'WindhorstESPN',
+                'ChrisBHaynes', 'Rachel__Nichols', 'stevejones20', 
+                'NekiasNBA', 'KevinOConnorNBA', 'ZachLowe_NBA'
+            ]
             
+            # Try to get at least one successful user's tweets
+            success = False
             all_tweets = []
+            
             for user in users:
                 user_tweets = try_get_tweets(user, scraper)
-                all_tweets.extend(user_tweets['tweets'])
+                if user_tweets and 'tweets' in user_tweets and user_tweets['tweets']:
+                    success = True
+                    all_tweets.extend(user_tweets['tweets'])
+                    print(f"Successfully fetched tweets for {user}")
             
-            if all_tweets:  # If we successfully got tweets, break the loop
+            if success:
                 tweets = all_tweets
+                print(f"Successfully using instance: {instance}")
                 break
-                
+            
         except Exception as e:
-            print(f"Error with instance {instance}: {e}")
+            print(f"Failed to use instance {instance}: {e}")
             continue
     
-    # Process tweets
+    # Process tweets with better error handling
     tweet_data = []
     text_check = set()
     
     for tweet in tweets:
         try:
+            # Skip if tweet is not in expected format
             if not isinstance(tweet, (dict, list)):
                 continue
                 
-            if isinstance(tweet, list):
-                tweet = tweet[0]
-                
-            text = tweet.get('text')
+            # Handle both single tweets and tweet lists
+            tweet_dict = tweet[0] if isinstance(tweet, list) else tweet
+            
+            # Extract text and check for duplicates
+            text = tweet_dict.get('text', '').strip()
             if not text or text in text_check:
                 continue
-                
-            user_name = tweet.get('user', {}).get('name')
+            
+            # Get user information
+            user_info = tweet_dict.get('user', {})
+            user_name = user_info.get('name', '')
             if not user_name:
                 continue
                 
+            # Extract tweet information
             tweet_info = {
                 'User Name': user_name,
                 'Text': text,
-                'Date': tweet.get('date'),
-                'Likes': tweet.get('stats', {}).get('likes', 0),
-                'Link': tweet.get('link', ''),
-                'Pictures': ', '.join(tweet.get('pictures', [])) if 'pictures' in tweet else ''
+                'Date': tweet_dict.get('date', ''),
+                'Likes': tweet_dict.get('stats', {}).get('likes', 0),
+                'Link': tweet_dict.get('link', ''),
+                'Pictures': ', '.join(tweet_dict.get('pictures', [])) if 'pictures' in tweet_dict else ''
             }
             
-            tweet_data.append(tweet_info)
-            text_check.add(text)
+            # Only add tweets with valid dates
+            if tweet_info['Date']:
+                tweet_data.append(tweet_info)
+                text_check.add(text)
             
         except Exception as e:
             print(f"Error processing tweet: {e}")
             continue
     
     if not tweet_data:
-        # Return empty DataFrame with correct columns if no tweets were fetched
+        print("No tweets were successfully fetched")
         return pd.DataFrame(columns=['User Name', 'Text', 'Date', 'Likes', 'Link', 'Pictures'])
     
     df = pd.DataFrame(tweet_data)
     
-    # Handle date conversion safely
-    try:
-        df['Date'] = pd.to_datetime(df['Date'], format="%b %d, %Y · %I:%M %p UTC")
-    except Exception as e:
-        print(f"Error converting dates: {e}")
-        df['Date'] = pd.to_datetime('now')  # Fallback to current time
+    # Handle date conversion with multiple formats
+    def parse_date(date_str):
+        try:
+            # Try the standard format first
+            return pd.to_datetime(date_str, format="%b %d, %Y · %I:%M %p UTC")
+        except:
+            try:
+                # Try parsing with dateutil as fallback
+                return pd.to_datetime(parser.parse(date_str))
+            except:
+                return pd.to_datetime('now')
+
+    df['Date'] = df['Date'].apply(parse_date)
     
+    # Sort and clean up the dataframe
     tweets_df = df.sort_values(by='Date', ascending=False).reset_index(drop=True)
+    
+    # Add debug information
+    print(f"Successfully processed {len(tweets_df)} tweets")
+    
     return tweets_df
+
+def display_tweets(tweets_df):
+    """Separate function to handle tweet display"""
+    if tweets_df.empty:
+        st.warning("Unable to fetch tweets at this time. Please try again later.")
+        return
+        
+    st.markdown('<h2 style="text-align: center;">Tweets</h2>', unsafe_allow_html=True)
+    st.markdown('##')
+    
+    for index, row in tweets_df.iterrows():
+        with st.container(border=True):
+            try:
+                st.markdown(f"<b>{row['User Name']}</b> [{row['Date'] - timedelta(hours=5)}]", unsafe_allow_html=True)
+                st.markdown(f"<span style='font-size: 22px;'>{row['Text']}</span>", unsafe_allow_html=True)
+                st.markdown(f"{row['Likes']} Likes", unsafe_allow_html=True)
+                if row['Pictures']:
+                    st.image(row['Pictures'].split(', '))
+                st.markdown(row['Link'], unsafe_allow_html=True)
+            except Exception as e:
+                st.error(f"Error displaying tweet: {str(e)}")
+        st.markdown('')
